@@ -147,6 +147,7 @@ let app = new Vue({
                         this.friends[this.chatting_with].lastChat = this.typing_text;
                         this.friends[this.chatting_with].lastChatTime = myDate.getHours()+":"+myDate.getMinutes();
                         this.friends[this.chatting_with].messages.push(msg);
+                        this.scroll();
                         //将消息保存到数据库
                         let that = this;
                         axios.post('/send_message',{
@@ -158,7 +159,7 @@ let app = new Vue({
                                 {
                                         that.typing_text = "";
                                 }else
-                                        alert(response.data.msg);
+                                        console.log(response.data.msg);
                         }).catch(function () {
                                 console.log("服务器未响应！code 12");
                         })
@@ -349,11 +350,19 @@ let app = new Vue({
                 clear_notice(){
                         this.notice_check = false;
                 },
+                //滚动到聊天位置末尾
+                scroll() {
+                        this.$nextTick(()=>{
+                                let container = this.$el.querySelector('#chat-body')
+                                container.scrollTop = container.scrollHeight;
+                        })
+                },
                 open_chat_window(index){
                         this.chatting_with = index;
                         this.messages_show = this.friends[index].messages;
                         this.chat_window = true;
                         this.friends[index].uncheck = 0;
+                        this.scroll();//划到底部
                 },
                 close_chat_window(){
                         this.chatting_with = -1;
@@ -497,7 +506,7 @@ let app = new Vue({
                         if(typeof (WebSocket) == "undefined"){
                                 console.log("您的浏览器不支持websocket");
                         }else{
-                                let socketUrl = "ws://socket服务器地址:服务端口/socket/"+this.user_id;
+                                let socketUrl = "ws://websocket服务ip地址:端口/socket/"+this.user_id;
                                 if(socket!=null){
                                         socket.close();
                                         socket = null;
@@ -528,10 +537,11 @@ let app = new Vue({
                                                 let index = that.get_index_of_friend(data.from);
                                                 if(index!==-1){
                                                         that.friends[index].messages.push(msg);
-                                                        that.friends[index].uncheck++;
                                                         that.friends[index].lastChat = data.text;
                                                         that.friends[index].lastChatTime = myDate.getHours()+":"+myDate.getMinutes();
+                                                        if(index!==that.chatting_with) that.friends[index].uncheck++;
                                                 }
+                                                that.scroll();
                                         }
                                 }
                         }
