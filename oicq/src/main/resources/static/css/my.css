@@ -1,0 +1,13 @@
+.avatar{
+    margin: 1px!important;
+}
+
+.imgButton{
+    float: right;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: 0px solid transparent;
+    outline: none;
+}
+

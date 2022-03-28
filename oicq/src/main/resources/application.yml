@@ -1,0 +1,25 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://数据库地址:端口/oicq?useUnicode=true&characterEncoding=UTF-8
+    username: 用户名
+    password: 密码
+  mail:
+    host: 邮件服务器
+    username: 邮箱
+    password: 授权码
+    protocol: smtp
+    default-encoding: UTF-8
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+mybatis:
+  type-aliases-package: com.demo1.Entity
+  mapper-locations: classpath:/mybatis/*.xml

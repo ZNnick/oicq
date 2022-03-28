@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragment :: head(~{::title})">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>OICQ登录</title>
+	<meta name="description" content="Cabe - Responsive Multi-purpose HTML5 Template">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- STYLESHEETS -->
+	<link href="../static/css/Montserrat.css" rel="stylesheet">
+	<link rel="stylesheet" href="../static/css/owl.carousel.min.css" type="text/css" media="all">
+	<link rel="stylesheet" href="../static/css/owl.theme.default.min.css" type="text/css" media="all">
+
+	<link rel="stylesheet" href="../static/css/themify-icons.css">
+
+	<link rel="stylesheet" href="../static/css/main.min.css" type="text/css" media="all">
+<!--	<link rel="stylesheet" href="../static/css/dark.css">-->
+
+
+</head>
+
+<body>
+	<main class="bg-grey" th:style="'background-image:url('+@{/images/bg_night.JPG}+')'" style="background-image: url(../static/images/bg_night.JPG);">
+		<div id="app" class="d-flex align-items-center mx-auto login-form">
+			<div class="container">
+				<div class="card">
+					<div class="card-body p-5">
+						<div>
+							<h3 class="title-text mb-5"><b>OICQ登录</b></h3>
+							<div class="input-group mb-3">
+								<i class="ti-email"></i>
+			                	<input class="form-control form-control-lg" v-model="email" type="email" placeholder="邮箱">
+			              	</div>
+							<p style="color: red" v-text="email_msg" v-show="email_check"></p>
+							<div class="input-group mb-3">
+			              		<i class="ti-lock"></i>
+			                	<input class="form-control form-control-lg" v-model="password" type="password" placeholder="密码" required="">
+			              	</div>
+							<p style="color: red" v-text="password_msg" v-show="password_check"></p>
+			              	<a class="link-primary" th:href="@{/forgot-password}" href="forgot-password.html">忘记密码?</a>
+			              	<button v-on:click="login" class="btn btn-block btn-lg btn-primary mt-2" type="button">登录</button>
+			              	<p class="mt-4 text-center">没有账户号吗? <a class="link-primary" th:href="@{/register}" href="register.html">点击这里注册</a>.</p>
+			            </div>
+					</div>
+				</div>
+			</div>			
+		</div>
+	</main>
+
+
+	<!-- SCRIPTS -->
+	<!-- SCRIPTS -->
+	<th:block th:replace="_fragment :: javascript">
+		<script src="../static/js/plugin.js"></script>
+		<script src="../static/js/main.min.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+	</th:block>
+
+	<script>
+		let email1 = sessionStorage.getItem("email");
+		let password1 = sessionStorage.getItem("password");
+		let app = new Vue({
+			el:"#app",
+			data:{
+				email:"",
+				password:"",
+				email_check:false,
+				password_check:false,
+				email_msg:"请输入您的邮箱哟~",
+				password_msg:"请输入您的密码哟~"
+			},
+			methods: {
+				login(){
+					if(this.email===""){
+						this.email_check = true;
+						return;
+					}
+					this.email_check = false;
+					if(this.password===""){
+						this.password_check = true;
+						return;
+					}
+					this.password_check = false;
+					let that = this;
+					axios.post('/loginPost',{
+						email:that.email,
+						password:that.password
+					}).then(function (response){
+						if(response.data.status===0){
+							that.email_msg=response.data.msg;
+							that.email_check = true;
+						}else if(response.data.status===100){
+							that.password_msg=response.data.msg;
+							that.password_check = true;
+						}
+						else{
+							sessionStorage.setItem("id",response.data.id);
+							window.location.href="/index";
+						}
+					})
+							.catch(function (error){
+								console.log(error);
+							})
+				}
+			},
+			mounted:function () {
+				if(email1!=null){
+					this.email = email1;
+				}
+				if(password1!=null){
+					this.password = password1;
+				}
+			}
+		})
+	</script>
+</body>
+
+</html>
