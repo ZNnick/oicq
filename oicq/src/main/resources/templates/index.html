@@ -276,7 +276,7 @@
 				</div>
 				<!-- chat header -->
 				<!-- chat body -->
-				<div class="chat-body" th:style="'overflow: hidden;outline: none;background: url('+@{/images/bg_night.JPG}+');'" style="overflow: hidden;outline: none;background: url('../static/images/bg_night.JPG');">
+				<div id="chat-body" class="chat-body" th:style="'overflow: hidden;outline: none;" style="overflow: hidden;outline: none;">
 					<div class="messages-content">
 
 						<div v-for="message in messages_show" :class="{'message-item':true,'outgoing-message':message.type==='out'}">
